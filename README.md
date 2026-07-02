@@ -6,9 +6,9 @@
 
 ## Development Process
 
-> I took inspiration from Aiden, an online-space developer. I have been a fan of his portfolio site for years but obviously i don't want to copy his style so in my girlfriend's words, I magpied some of his ideas such as his "marquee carousel" for showing his tech stack as well as the layout of his about me section. However, i also tried to give it my own ideas, making it more pill shaped and with more of a glassmorphism style.
+> I took inspiration from [Aiden](https://aiden.gg), an online-space developer. I have been a fan of his portfolio site for years but obviously i don't want to copy his style so in my girlfriend's words, I magpied some of his ideas such as his "marquee carousel" for showing his tech stack as well as the layout of his about me section. However, i also tried to give it my own ideas, making it more pill shaped and with more of a glassmorphism style.
 >
-> On top of this, I was reading some articles about Vercel's Geist font and decided to use their 'Geist Mono' font as I have always been a fan of Jetbrains Mono and thought that I would give something new a try. Safe to say, I'm already a fan of how it looks
+> On top of this, I was reading some articles about Vercel's Geist font and decided to use their [Geist Mono](https://vercel.com/font?type=mono) font as I have always been a fan of [Jetbrains Mono](https://www.jetbrains.com/lp/mono/) and thought that I would give something new a try. Safe to say, I'm already a fan of how it looks..
 >
 > I would like to introduce some backend features into my portfolio as I have done with my others, such as live github and discord integration pages. I am not sure how I will do this yet but given that I have built my own version of Coolify and deployed it on my homelab, it shouldn't be too much of a roadblock to have to pay to deploy it as of now.
 >
