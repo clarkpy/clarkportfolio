@@ -21,7 +21,7 @@ const experience = [
     text: "Created a series of services for security, performance and management.",
     link: "#",
     tech: otherTech,
-  },
+  }
 ];
 
 const projects = [
@@ -364,7 +364,7 @@ export default function App() {
               className="navbar-brand"
             >
             <div className="navbar-brand-icon">
-               {/* find a nice pfp for nav bar :)*/}
+               <img src="public/profile.jpg" alt="AJ" className="w-10 h-10 rounded-full" />
             </div>
             <div>
               <p className="navbar-eyebrow">clarklab.tech</p>
@@ -504,7 +504,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="experience" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
+      {/* <section id="experience" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <SectionTitle eyebrow="Experience" title="What I've Done" />
 
         <div className="grid grid-cols-1 gap-6">
@@ -549,7 +549,7 @@ export default function App() {
             </FadeIn>
           ))}
         </div>
-      </section>
+      </section> */}
 
       <section id="projects" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <SectionTitle eyebrow="Projects" title="Stuff I'm Working On" />
