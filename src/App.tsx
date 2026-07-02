@@ -54,7 +54,7 @@ const projects = [
     description: "A basic site to show off my stuff.",
     tags: ["React", "Tailwind", "Framer Motion"],
     link: "https://clarklab.tech",
-    source: "https://github.com/clarkpy/portfolio",
+    source: "https://github.com/clarkpy/clarkportfolio",
     meta: "clarkportfolio",
   },
   {
