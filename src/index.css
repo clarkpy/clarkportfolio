@@ -93,8 +93,6 @@ body {
   box-shadow:
     0 20px 60px color-mix(in srgb, var(--clark-accent) 6%, transparent),
     inset 0 0 0 1px color-mix(in srgb, var(--clark-accent) 8%, transparent);
-  backdrop-filter: blur(20px) saturate(1.15);
-  -webkit-backdrop-filter: blur(20px) saturate(1.15);
 }
 
 .navbar-inner {
@@ -126,8 +124,6 @@ body {
   border: 1px solid color-mix(in srgb, var(--clark-accent) 22%, transparent);
   background: color-mix(in srgb, var(--clark-accent) 8%, transparent);
   color: var(--clark-accent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .navbar-eyebrow {

@@ -368,7 +368,7 @@ export default function App() {
 
       <div className="navbar-shell">
         <motion.nav
-          className="navbar"
+          className="navbar backdrop-blur-[20px] backdrop-saturate-[1.15]"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.39, 0.21, 0.12, 0.96] }}
@@ -379,7 +379,7 @@ export default function App() {
               onClick={() => scrollTo("hero")}
               className="navbar-brand"
             >
-            <div className="navbar-brand-icon">
+            <div className="navbar-brand-icon backdrop-blur-[12px]">
                <img src="/profile.jpg" alt="AJ" className="w-10 h-10 rounded-full" />
             </div>
             <div>
