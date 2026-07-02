@@ -1,6 +1,8 @@
 import type { SimpleIcon } from "simple-icons";
 import {
+  siClaude,
   siCoolify,
+  siCursor,
   siExpress,
   siGhostty,
   siHetzner,
@@ -15,4 +17,7 @@ export const simpleTechIcons: Record<string, SimpleIcon> = {
   coolify: siCoolify,
   ghostty: siGhostty,
   tailscale: siTailscale,
+  anthropic: siClaude,
+  claude: siClaude,
+  cursor: siCursor,
 };

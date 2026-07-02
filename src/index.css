@@ -280,6 +280,7 @@ body {
   -webkit-user-select: none;
   cursor: grab;
   touch-action: pan-y;
+  container-type: inline-size;
   mask-image: linear-gradient(
     to right,
     transparent,
@@ -287,6 +288,20 @@ body {
     black 94%,
     transparent
   );
+}
+
+.tech-marquee-wide {
+  --marquee-visible-chips: 6;
+}
+
+@container (min-width: 1px) {
+  .tech-marquee-wide .tech-chip {
+    min-width: calc(
+      (100cqw - (var(--marquee-visible-chips) - 1) * 1rem) /
+        var(--marquee-visible-chips)
+    );
+    justify-content: center;
+  }
 }
 
 .tech-marquee-dragging {

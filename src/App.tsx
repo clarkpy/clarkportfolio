@@ -526,7 +526,11 @@ export default function App() {
                   </p>
                   {item.tech ? (
                     <div className="mt-5 border-t border-white/[0.06] pt-4">
-                      <TechMarquee items={item.tech} columnSpan={2} />
+                      <TechMarquee
+                        key={item.tech.map((tech) => tech.slug).join("-")}
+                        items={item.tech}
+                        columnSpan={2}
+                      />
                     </div>
                   ) : null}
                 </div>

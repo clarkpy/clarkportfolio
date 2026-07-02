@@ -3,8 +3,8 @@ import type { AboutCard, TechItem } from "./types";
 export const MARQUEE_SPEED = 12;
 export const MARQUEE_REFERENCE_ITEMS = 4;
 
-export function getMarqueeDuration(itemCount: number, columnSpan = 1) {
-  return (MARQUEE_SPEED * (itemCount / MARQUEE_REFERENCE_ITEMS)) / columnSpan;
+export function getMarqueeDuration(itemCount: number) {
+  return (MARQUEE_SPEED * (itemCount / MARQUEE_REFERENCE_ITEMS)) / 2;
 }
 
 export const frontendTech: TechItem[] = [
@@ -45,6 +45,13 @@ export const otherTech: TechItem[] = [
   { name: "Insomnia", slug: "insomnia" },
 ];
 
+export const aiTech: TechItem[] = [
+  { name: "OpenAI", slug: "openai" },
+  { name: "Claude", slug: "anthropic" },
+  { name: "Cursor", slug: "cursor" },
+  { name: "Codex", slug: "codex" },
+];
+
 export const aboutCards: AboutCard[] = [
   {
     title: "Summary",
@@ -67,8 +74,14 @@ export const aboutCards: AboutCard[] = [
   },
   {
     title: "Other Technologies",
-    description: "Tools and platforms I use across the development process. This includes CI/CD, deployment, and monitoring.",
+    description: "Everything here I use across my Macbook and Windows Desktop. This includes my IDEs, OS and tools I use relating to development. I believe these are the best tools for what they do and I recommend you check them out..",
     tech: otherTech,
     span: 2,
   },
+  {
+    title: "AI & Machine Learning",
+    description: "I have used AI to help me build more interesting projects. In my opinion, it is impossible to avoid and in order to prepare for the future, I use prompt engineering to my advantage when using it for agentic assistance and to help make me a better developer.",
+    tech: aiTech,
+    span: 2,
+  }
 ];

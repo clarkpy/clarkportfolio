@@ -4,16 +4,27 @@ import {
   useAnimationFrame,
   useMotionValue,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TechChip } from "./TechChip";
 import { getMarqueeDuration } from "./tech-data";
 import type { TechItem } from "./types";
+
+const MAX_CYCLE_REPEATS = 32;
 
 function wrapOffset(value: number, loopWidth: number) {
   if (loopWidth <= 0) return value;
   let wrapped = value % loopWidth;
   if (wrapped > 0) wrapped -= loopWidth;
   return wrapped;
+}
+
+function getMinCycleRepeats(itemCount: number, columnSpan: number) {
+  const targetVisible = columnSpan >= 2 ? 6 : 4;
+  return Math.max(2, Math.ceil((targetVisible * 2) / itemCount));
+}
+
+function buildCycle(items: TechItem[], repeatCount: number) {
+  return Array.from({ length: repeatCount }, () => items).flat();
 }
 
 export function TechMarquee({
@@ -25,15 +36,26 @@ export function TechMarquee({
   columnSpan?: number;
   reverse?: boolean;
 }) {
-  const loop = [...items, ...items];
-  const duration = getMarqueeDuration(items.length, columnSpan);
+  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const loopWidthRef = useRef(0);
+  const pixelsPerSecondRef = useRef(0);
   const dragStartRef = useRef({ pointerX: 0, offsetX: 0 });
   const velocityRef = useRef(0);
   const lastPointerXRef = useRef(0);
   const lastMoveTimeRef = useRef(0);
   const prefersReducedMotionRef = useRef(false);
+
+  const [repeatCount, setRepeatCount] = useState(() =>
+    getMinCycleRepeats(items.length, columnSpan),
+  );
+
+  const cycle = useMemo(
+    () => buildCycle(items, repeatCount),
+    [items, repeatCount],
+  );
+  const loop = useMemo(() => [...cycle, ...cycle], [cycle]);
+  const cycleDuration = getMarqueeDuration(cycle.length);
 
   const x = useMotionValue(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -57,19 +79,36 @@ export function TechMarquee({
   }, []);
 
   useEffect(() => {
+    const container = containerRef.current;
     const track = trackRef.current;
-    if (!track) return;
+    if (!container || !track) return;
 
-    const measure = () => {
-      loopWidthRef.current = track.scrollWidth / 2;
+    const syncLoop = () => {
+      const containerWidth = container.clientWidth;
+      const cycleWidth = track.scrollWidth / 2;
+
+      if (cycleWidth <= 0 || containerWidth <= 0) return;
+
+      if (
+        cycleWidth < containerWidth &&
+        repeatCount < MAX_CYCLE_REPEATS
+      ) {
+        setRepeatCount((count) => count + 1);
+        return;
+      }
+
+      loopWidthRef.current = cycleWidth;
+      pixelsPerSecondRef.current = cycleWidth / cycleDuration;
+      x.set(wrapOffset(x.get(), cycleWidth));
     };
 
-    measure();
+    syncLoop();
 
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(syncLoop);
+    observer.observe(container);
     observer.observe(track);
     return () => observer.disconnect();
-  }, [loop.length]);
+  }, [cycle.length, cycleDuration, loop.length, repeatCount, x]);
 
   useAnimationFrame((_, delta) => {
     if (
@@ -83,7 +122,7 @@ export function TechMarquee({
     }
 
     const direction = reverse ? 1 : -1;
-    const distance = (loopWidthRef.current / duration) * (delta / 1000);
+    const distance = pixelsPerSecondRef.current * (delta / 1000);
     x.set(wrapOffset(x.get() + direction * distance, loopWidthRef.current));
   });
 
@@ -153,9 +192,12 @@ export function TechMarquee({
     });
   }
 
+  const isWide = columnSpan >= 2;
+
   return (
     <div
-      className={`tech-marquee ${isDragging ? "tech-marquee-dragging" : ""}`}
+      ref={containerRef}
+      className={`tech-marquee ${isWide ? "tech-marquee-wide" : ""} ${isDragging ? "tech-marquee-dragging" : ""}`}
       onContextMenu={(event) => event.preventDefault()}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -177,7 +219,7 @@ export function TechMarquee({
         style={{ x }}
       >
         {loop.map((item, index) => (
-          <TechChip key={`${item.name}-${index}`} item={item} />
+          <TechChip key={`${item.slug}-${index}`} item={item} />
         ))}
       </motion.div>
     </div>
