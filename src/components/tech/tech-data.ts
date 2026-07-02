@@ -52,6 +52,16 @@ export const aiTech: TechItem[] = [
   { name: "Codex", slug: "codex" },
 ];
 
+export const mcTech: TechItem[] = [
+  { name: "Java", slug: "java" },
+  { name: "Kotlin", slug: "kotlin" },
+  { name: "TypeScript", slug: "typescript" },
+  { name: "IntelliJ IDEA", slug: "intellij-idea" },
+  { name: "VSCode", slug: "vscode" },
+  { name: "Pterodactyl", slug: "pterodactyl" },
+  { name: "Paper", slug: "paper" },
+];
+
 export const aboutCards: AboutCard[] = [
   {
     title: "Summary",

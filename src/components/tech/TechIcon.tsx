@@ -7,6 +7,9 @@ const coloredLogos = logoIcons as Record<string, IconifyLogoIcon>;
 const imageIcons: Record<string, string> = {
   orbstack: "/orbstack-icon.png",
   codex: "/codex-icon.png",
+  paper: "/paper-icon.png",
+  "intellij-idea": "/intellij-idea-icon.png",
+  pterodactyl: "/pterodactyl-icon.png",
 };
 
 function getBrandFill(hex: string) {

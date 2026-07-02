@@ -7,7 +7,8 @@ import {
   TechCard,
   TechMarquee,
   aboutCards,
-  otherTech,
+  mcTech,
+  backendTech,
 } from "./components/tech";
 
 const navSections = ["hero", "about", "experience", "projects", "contact"] as const;
@@ -15,12 +16,27 @@ const navSections = ["hero", "about", "experience", "projects", "contact"] as co
 {/* change when i get a change */}
 const experience = [
   {
-    role: "Engineer",
-    company: "Vandal",
+    role: "Technical Support",
+    company: "Feather Client",
     period: "2024-2025",
-    text: "Created a series of services for security, performance and management.",
+    text: "Providing technical support to over 150,000 users on Feather Client. This includes helping users debug the client, ensuring a smooth experience.",
+    link: "https://feathermc.com",
+  },
+  {
+    role: "Software Engineer",
+    company: "MineCrush",
+    period: "2024-2025",
+    text: "Developed a series of tools for MineCrush preventing against foul play and bad actors..",
     link: "#",
-    tech: otherTech,
+    tech: mcTech,
+  },
+  {
+    role: "Backend Developer",
+    company: "Akrylic Entertainment",
+    period: "2024-2025",
+    text: "Provided paid services to clients.",
+    link: "#",
+    tech: backendTech,
   }
 ];
 
@@ -504,7 +520,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* <section id="experience" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
+      <section id="experience" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <SectionTitle eyebrow="Experience" title="What I've Done" />
 
         <div className="grid grid-cols-1 gap-6">
@@ -534,7 +550,7 @@ export default function App() {
                     </div>
                   ) : null}
                 </div>
-                {item.link && (
+                {item.link && item.link !== "#" ? (
                   <a
                     href={item.link}
                     className="btn shrink-0 self-start"
@@ -544,12 +560,24 @@ export default function App() {
                     Visit
                     <ArrowUpRight size={16} />
                   </a>
-                )}
+                ) : item.link === "#" ? (
+                  <button
+                    className="btn shrink-0 self-start cursor-not-allowed bg-zinc-800 text-zinc-400"
+                    disabled
+                    type="button"
+                    tabIndex={-1}
+                    aria-disabled="true"
+                  >
+                    Unavailable
+                    <ArrowUpRight size={16} />
+                  </button>
+                ) : null}
+           
               </GlowCard>
             </FadeIn>
           ))}
         </div>
-      </section> */}
+      </section>
 
       <section id="projects" className="relative z-10 mx-auto max-w-6xl px-6 py-24">
         <SectionTitle eyebrow="Projects" title="Stuff I'm Working On" />
