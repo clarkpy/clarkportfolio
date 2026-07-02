@@ -31,6 +31,7 @@ const projects = [
     tags: ["React", "Electron", "Rust"],
     link: "https://pass.clarklab.tech",
     source: "#",
+    meta: "Unavailable"
   },
   {
     name: "This Site",
@@ -38,6 +39,7 @@ const projects = [
     tags: ["React", "Tailwind", "Framer Motion"],
     link: "https://clarklab.tech",
     source: "https://github.com/clarkpy/portfolio",
+    meta: "clarkportfolio",
   },
   {
     name: "ClarkLab",
@@ -47,6 +49,7 @@ const projects = [
     source: "https://github.com/clarkpy/clarklab-global",
     fullWidth: true,
     screenshot: "public/clarklab.png",
+    meta: "clarklab-global|clarklab-frontend|clarklab-api|clarklab-agent|clarklab"
   },
 ] as const;
 
@@ -76,6 +79,103 @@ function ProjectSourceLink({ source }: { source: string }) {
     >
       <GitHubIcon size={16} />
     </a>
+  );
+}
+
+async function getTimeSpentFromHackatime() {
+  const response = await fetch("https://hackatime.hackclub.com/api/v1/users/ajclark/project/clarkportfolio");
+  const data = await response.json();
+  const seconds = data.total_seconds as number;
+  const totalMinutes = Math.floor(seconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h ${minutes}m`;
+}
+
+function getTodayDateRange() {
+  const now = new Date();
+
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  return {
+    start_date: startOfToday.toISOString(),
+    end_date: now.toISOString(),
+  };
+}
+
+async function getTimeSpentFromHackatimeToday() {
+  const { start_date, end_date } = getTodayDateRange();
+
+  const url = new URL(
+    "https://hackatime.hackclub.com/api/v1/users/ajclark/stats"
+  );
+
+  url.searchParams.set("start_date", start_date);
+  url.searchParams.set("end_date", end_date);
+
+  const response = await fetch(url.toString());
+
+  if (!response.ok) {
+    throw new Error(`Hackatime request failed: ${response.status}`);
+  }
+
+  const json = await response.json();
+
+  const seconds = json.data.total_seconds as number;
+
+  const totalMinutes = Math.floor(seconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${hours}h ${minutes}m`;
+}
+
+async function fetchHackatimeFor(projectSlug: string) {
+  const projectSlugs = projectSlug.split("|");
+  let totalSeconds = 0;
+
+  await Promise.all(projectSlugs.map(async (slug) => {
+    const response = await fetch(
+      `https://hackatime.hackclub.com/api/v1/users/ajclark/project/${slug}`,
+    );
+    const data = await response.json();
+    totalSeconds += data.total_seconds as number;
+  }));
+
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h ${minutes}m`;
+}
+
+function ProjectMeta({ projectHackatimeHandle }: { projectHackatimeHandle: string }) {
+  const [time, setTime] = useState<string | null>(null);
+  const unavailable =
+    !projectHackatimeHandle || projectHackatimeHandle === "Unavailable";
+
+  useEffect(() => {
+    if (unavailable) return;
+
+    fetchHackatimeFor(projectHackatimeHandle)
+      .then(setTime)
+      .catch(() => setTime(null));
+  }, [projectHackatimeHandle, unavailable]);
+
+  if (unavailable) {
+    return (
+      <span className="shrink-0 text-sm text-zinc-500 flex justify-end w-full">
+        Time unavailable
+      </span>
+    );
+  }
+
+  if (!time) return null;
+
+  return (
+    <span className="shrink-0 text-sm text-zinc-500 flex justify-end w-full">
+      Made in {time}
+    </span>
   );
 }
 
@@ -154,6 +254,10 @@ function ProjectCard({
           </span>
         ))}
       </div>
+      {"meta" in project ? (
+        <ProjectMeta projectHackatimeHandle={project.meta} />
+      ) : null}
+ 
     </>
   );
 
@@ -182,7 +286,8 @@ function scrollTo(id: string) {
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("hero");
-
+  const [timeSpent, setTimeSpent] = useState<string | null>(null);
+  const [timeSpentToday, setTimeSpentToday] = useState<string | null>(null);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 120,
@@ -208,6 +313,18 @@ export default function App() {
     });
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    getTimeSpentFromHackatime()
+      .then(setTimeSpent)
+      .catch(() => setTimeSpent(null));
+  }, []);
+
+  useEffect(() => {
+    getTimeSpentFromHackatimeToday()
+      .then(setTimeSpentToday)
+      .catch(() => setTimeSpentToday(null));
   }, []);
 
   return (
@@ -314,8 +431,9 @@ export default function App() {
             Shoot me an email for services!
           </p>
           <p className="mt-4 text-sm text-zinc-500">
-            Currently:{" "}
-            <span className="text-clark-accent">Working on ClarkPass</span>
+            I've been coding for{" "}
+            <span className="text-clark-accent">{timeSpentToday}</span>
+            {" "}today.
           </p>
         </FadeIn>
 
@@ -463,7 +581,22 @@ export default function App() {
       </section>
 
       <footer className="relative z-10 border-t border-[var(--clark-border)] px-6 py-8 text-center text-sm text-zinc-500">
-        <p>clarklab.tech | Made by AJ</p>
+        <p>
+          Made by AJ<br />check out the{" "}
+          <a
+            href="https://github.com/clarkpy/portfolio"
+            className="text-clark-accent hover:underline"
+          >
+            source code
+          </a>
+          {timeSpent && (
+            <>
+              {" | Built in "}
+              <a href="https://hackati.me/ajclark" className="text-clark-accent hover:underline">{timeSpent}</a>
+            </>
+          )}
+        </p>
+   
       </footer>
     </main>
   );
