@@ -26,10 +26,20 @@ export function GlowCard({
     mouseY.set(event.clientY - rect.top);
   }
 
+  const cardClassName = [
+    "relative overflow-hidden rounded-[1.25rem] border bg-white/[0.03] p-0 backdrop-blur-[20px] backdrop-saturate-[1.2] transition-[border-color,box-shadow] duration-300",
+    hovered
+      ? "border-white/[0.14] shadow-[0_8px_32px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]"
+      : "border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]",
+    className.includes("h-full") ? "h-full" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
       ref={ref}
-      className={`card ${hovered ? "card-hovered" : ""} ${className.includes("h-full") ? "h-full" : ""}`}
+      className={cardClassName}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

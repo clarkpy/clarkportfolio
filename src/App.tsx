@@ -64,7 +64,7 @@ const projects = [
     link: "https://app.clarklab.tech",
     source: "https://github.com/clarkpy/clarklab-global",
     fullWidth: true,
-    screenshot: "public/clarklab.png",
+    screenshot: "/clarklab.png",
     meta: "clarklab-global|clarklab-frontend|clarklab-api|clarklab-agent|clarklab"
   },
 ] as const;
@@ -380,7 +380,7 @@ export default function App() {
               className="navbar-brand"
             >
             <div className="navbar-brand-icon">
-               <img src="public/profile.jpg" alt="AJ" className="w-10 h-10 rounded-full" />
+               <img src="/profile.jpg" alt="AJ" className="w-10 h-10 rounded-full" />
             </div>
             <div>
               <p className="navbar-eyebrow">clarklab.tech</p>
