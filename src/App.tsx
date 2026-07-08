@@ -8,7 +8,6 @@ import {
   TechMarquee,
   aboutCards,
   mcTech,
-  backendTech,
 } from "./components/tech";
 import { akrylicTech } from "./components/tech/tech-data";
 
