@@ -1,6 +1,9 @@
 export type TechItem = {
   name: string;
   slug: string;
+  usingFor?: string;
+  note?: string;
+  strong?: boolean;
 };
 
 export type IconifyLogoIcon = {

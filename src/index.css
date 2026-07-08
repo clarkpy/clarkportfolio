@@ -287,6 +287,115 @@ body {
   will-change: transform;
 }
 
+.tech-tooltip {
+  position: fixed;
+  z-index: 9999;
+  width: min(20rem, calc(100vw - 2rem));
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  border: 1px solid color-mix(in srgb, var(--clark-accent) 28%, transparent);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--clark-accent) 14%, transparent),
+      rgba(255, 255, 255, 0.045)
+    ),
+    rgba(8, 8, 17, 0.92);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    0 0 40px color-mix(in srgb, var(--clark-accent) 14%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+  color: white;
+  backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.tech-tooltip-glow {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at top left,
+    color-mix(in srgb, var(--clark-accent) 28%, transparent)
+    transparent 58%
+  );
+}
+
+.tech-tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tech-tooltip-icon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--clark-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--clark-accent) 12%, transparent);
+}
+
+.tech-tooltip-icon .tech-chip-icon,
+.tech-tooltip-icon img,
+.tech-tooltip-icon svg {
+  height: 1.35rem;
+  width: 1.35rem;
+}
+
+.tech-tooltip-eyebrow {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--clark-accent);
+}
+
+.tech-tooltip h4 {
+  margin: 0.15rem 0 0;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.tech-tooltip-text {
+  margin: 0.9rem 0 0;
+  min-height: 2.75rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.tech-tooltip-note {
+  margin: 0.75rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #a1a1aa;
+}
+
+.tech-tooltip-cursor {
+  display: inline-block;
+  margin-left: 0.1rem;
+  color: var(--clark-accent);
+  animation: tech-tooltip-cursor-blink 0.8s steps(2, start) infinite;
+}
+
+@keyframes tech-tooltip-cursor-blink {
+  0%, 45% {
+    opacity: 1;
+  }
+  46%, 100% {
+    opacity: 0;
+  }
+}
+
 .tech-chip {
   display: inline-flex;
   align-items: center;
@@ -305,12 +414,42 @@ body {
     box-shadow 0.25s ease;
 }
 
+.tech-chip-strong {
+  border-color: color-mix(in srgb, var(--clark-accent) 42%, transparent);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--clark-accent) 16%, transparent),
+      rgba(255, 255, 255, 0.05)
+    ),
+    rgba(255, 255, 255, 0.065);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--clark-accent) 28%, transparent),
+    0 0 22px color-mix(in srgb, var(--clark-accent) 24%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 .tech-chip:hover {
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.1);
   box-shadow:
     0 6px 24px rgba(0, 0, 0, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-chip-strong:hover {
+  border-color: color-mix(in srgb, var(--clark-accent) 65%, transparent);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--clark-accent) 22%, transparent),
+      rgba(255, 255, 255, 0.08)
+    ),
+    rgba(255, 255, 255, 0.085);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.3),
+    0 0 28px color-mix(in srgb, var(--clark-accent) 34%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .tech-chip-label {
@@ -329,6 +468,15 @@ body {
   text-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
 }
 
+.tech-chip-strong .tech-chip-label {
+  color: var(--clark-foreground);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--clark-accent) 18%, transparent);
+}
+
+.tech-chip-strong:hover .tech-chip-label {
+  text-shadow: 0 0 18px color-mix(in srgb, var(--clark-accent) 28%, transparent);
+}
+
 .tech-chip-icon {
   height: 1.375rem;
   width: 1.375rem;
@@ -338,6 +486,10 @@ body {
   user-select: none;
   object-fit: contain;
   transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.tech-chip-strong .tech-chip-icon {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--clark-accent) 26%, transparent));
 }
 
 .tech-chip-fallback {

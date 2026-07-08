@@ -8,29 +8,29 @@ export function getMarqueeDuration(itemCount: number) {
 }
 
 export const frontendTech: TechItem[] = [
-  { name: "React", slug: "react" },
-  { name: "Tailwind", slug: "tailwindcss" },
-  { name: "TypeScript", slug: "typescript" },
-  { name: "Vite", slug: "vite" },
+  { name: "React", slug: "react", usingFor: "2 years", strong: true },
+  { name: "Tailwind", slug: "tailwindcss", usingFor: "1 year" },
+  { name: "TypeScript", slug: "typescript", usingFor: "2 years", strong: true },
+  { name: "shadcn/ui", slug: "shadcn-ui", usingFor: "~2 years" },
+  { name: "Next.js", slug: "nextjs", usingFor: "1 year" },
+  { name: "Vite", slug: "vite", usingFor: "1 year" },
 ];
 
 export const backendTech: TechItem[] = [
-  { name: "Express", slug: "express" },
-  { name: "MongoDB", slug: "mongodb" },
-  { name: "PostgreSQL", slug: "postgresql" },
-  { name: "Kotlin", slug: "kotlin" },
-  { name: "Rust", slug: "rust" },
-  { name: "Python", slug: "python" },
-  { name: "Java", slug: "java" },
+  { name: "Express", slug: "express", usingFor: "2 years" },
+  { name: "MongoDB", slug: "mongodb", usingFor: "2 years", strong: true },
+  { name: "PostgreSQL", slug: "postgresql", usingFor: "1 month" },
+  { name: "TypeScript", slug: "typescript", usingFor: "3 years", strong: true },
+  { name: "Kotlin", slug: "kotlin", usingFor: "4 years", strong: true },
+  { name: "Java", slug: "java", usingFor: "~5 years but i quickly moved onto Kotlin" },
+  { name: "Rust", slug: "rust", usingFor: "1 year" },
 ];
 
 export const otherTech: TechItem[] = [
   { name: "Docker", slug: "docker" },
   { name: "Git", slug: "git" },
   { name: "Debian", slug: "debian" },
-  { name: "Nushell", slug: "nushell" },
   { name: "GitHub", slug: "github" },
-  { name: "Coolify", slug: "coolify" },
   { name: "JetBrains", slug: "jetbrains" },
   { name: "Visual Studio Code", slug: "vscode" },
   { name: "Ghostty", slug: "ghostty" },
@@ -41,15 +41,22 @@ export const otherTech: TechItem[] = [
   { name: "Hetzner", slug: "hetzner" },
   { name: "Vercel", slug: "vercel" },
   { name: "Cloudflare", slug: "cloudflare" },
-  { name: "AWS", slug: "aws" },
   { name: "Insomnia", slug: "insomnia" },
 ];
 
 export const aiTech: TechItem[] = [
   { name: "OpenAI", slug: "openai" },
-  { name: "Claude", slug: "anthropic" },
-  { name: "Cursor", slug: "cursor" },
-  { name: "Codex", slug: "codex" },
+  { name: "Copilot", slug: "copilot" }
+];
+
+export const akrylicTech: TechItem[] = [
+  { name: "Express", slug: "express", usingFor: "2 years" },
+  { name: "MongoDB", slug: "mongodb", usingFor: "2 years" },
+  { name: "PostgreSQL", slug: "postgresql", usingFor: "1 month" },
+  { name: "TypeScript", slug: "typescript", usingFor: "3 years" },
+  { name: "Kotlin", slug: "kotlin", usingFor: "4 years" },
+  { name: "Java", slug: "java", usingFor: "~5 years but i quickly moved onto Kotlin" },
+  { name: "Rust", slug: "rust", usingFor: "1 year" },
 ];
 
 export const mcTech: TechItem[] = [
@@ -90,7 +97,7 @@ export const aboutCards: AboutCard[] = [
   },
   {
     title: "AI & Machine Learning",
-    description: "I have used AI to help me build more interesting projects. In my opinion, it is impossible to avoid and in order to prepare for the future, I use prompt engineering to my advantage when using it for agentic assistance and to help make me a better developer.",
+    description: "I have used AI to help me build more interesting projects. In my opinion, it is hard to avoid and in order to prepare for the future, I use prompt engineering to my advantage when using it for agentic assistance and to help make me a better developer.",
     tech: aiTech,
     span: 2,
   }

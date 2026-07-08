@@ -1,6 +1,7 @@
 import type { IconifyLogoIcon } from "./types";
 import logoIcons from "./logo-icons.json";
 import { simpleTechIcons } from "./simple-tech-icons";
+import { siNextdotjs } from "simple-icons";
 
 const coloredLogos = logoIcons as Record<string, IconifyLogoIcon>;
 
@@ -10,6 +11,11 @@ const imageIcons: Record<string, string> = {
   paper: "/paper-icon.png",
   "intellij-idea": "/intellij-idea-icon.png",
   pterodactyl: "/pterodactyl-icon.png",
+  "shadcn-ui": "/shadcn-icon.svg",
+};
+
+const brandIcons: Record<string, typeof siNextdotjs> = {
+  nextjs: siNextdotjs,
 };
 
 function getBrandFill(hex: string) {
@@ -44,6 +50,20 @@ export function TechIcon({ slug }: { slug: string }) {
         aria-hidden="true"
         dangerouslySetInnerHTML={{ __html: colored.body }}
       />
+    );
+  }
+
+  const brand = brandIcons[slug];
+  if (brand) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        className="tech-chip-icon"
+        aria-hidden="true"
+      >
+        <path d={brand.path} fill={`#${brand.hex}`} />
+      </svg>
     );
   }
 

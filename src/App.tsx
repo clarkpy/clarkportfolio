@@ -10,6 +10,7 @@ import {
   mcTech,
   backendTech,
 } from "./components/tech";
+import { akrylicTech } from "./components/tech/tech-data";
 
 const navSections = ["hero", "about", "experience", "projects", "contact"] as const;
 
@@ -36,16 +37,16 @@ const experience = [
     period: "2024-2025",
     text: "Provided paid services to clients.",
     link: "#",
-    tech: backendTech,
+    tech: akrylicTech,
   }
 ];
 
 const projects = [
   {
-    name: "ClarkPass",
-    description: "A self-hosted, private, secure password manager.",
-    tags: ["React", "Electron", "Rust"],
-    link: "https://pass.clarklab.tech",
+    name: "Telemetry",
+    description: "A “radio station” for live project telemetry.",
+    tags: [],
+    link: "#",
     source: "#",
     meta: "Unavailable"
   },
@@ -53,7 +54,7 @@ const projects = [
     name: "This Site",
     description: "A basic site to show off my stuff.",
     tags: ["React", "Tailwind", "Framer Motion"],
-    link: "https://clarklab.tech",
+    link: "#",
     source: "https://github.com/clarkpy/clarkportfolio",
     meta: "clarkportfolio",
   },
@@ -94,6 +95,38 @@ function ProjectSourceLink({ source }: { source: string }) {
       aria-label="View source on GitHub"
     >
       <GitHubIcon size={16} />
+    </a>
+  );
+}
+
+function ProjectVisitLink({
+  link,
+  name,
+}: {
+  link: string;
+  name: string;
+}) {
+  if (link === "#") {
+    return (
+      <span
+        className={`${projectLinkClass} cursor-not-allowed opacity-40 hover:scale-100`}
+        title="Unavailable"
+        aria-label={`Visit ${name} unavailable`}
+      >
+        <ArrowUpRight size={16} />
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={link}
+      className={projectLinkClass}
+      target={link.startsWith("http") ? "_blank" : undefined}
+      rel={link.startsWith("http") ? "noreferrer" : undefined}
+      aria-label={`Visit ${name}`}
+    >
+      <ArrowUpRight size={16} />
     </a>
   );
 }
@@ -181,7 +214,7 @@ function ProjectMeta({ projectHackatimeHandle }: { projectHackatimeHandle: strin
   if (unavailable) {
     return (
       <span className="shrink-0 text-sm text-zinc-500 flex justify-end w-full">
-        Time unavailable
+        Not started yet
       </span>
     );
   }
@@ -249,15 +282,7 @@ function ProjectCard({
         <h3 className="text-2xl font-bold text-white">{project.name}</h3>
         <div className="flex shrink-0 items-center gap-2">
           <ProjectSourceLink source={project.source} />
-          <a
-            href={project.link}
-            className={projectLinkClass}
-            target={project.link.startsWith("http") ? "_blank" : undefined}
-            rel={project.link.startsWith("http") ? "noreferrer" : undefined}
-            aria-label={`Open ${project.name}`}
-          >
-            <ArrowUpRight size={16} />
-          </a>
+          <ProjectVisitLink link={project.link} name={project.name} />
         </div>
       </div>
       <p className="mt-3 flex-1 leading-relaxed text-zinc-300">
