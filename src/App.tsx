@@ -1,5 +1,5 @@
-import { motion, useScroll, useSpring } from "framer-motion";
-import { ArrowUpRight, Code2, Mail } from "lucide-react";
+import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
+import { ArrowUpRight, Code2, Mail, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GitHubIcon } from "./components/GitHubIcon";
 import { GlowCard } from "./components/GlowCard";
@@ -47,7 +47,26 @@ const projects = [
     tags: [],
     link: "#",
     source: "#",
-    meta: "Unavailable"
+    meta: "Unavailable",
+    status: "In Planning",
+    year: "2026",
+    role: "Developer & Maintainer",
+    screenshot: "/telemetry.png",
+    details : {
+      intro:
+        "Telemetry is a project for providing live telemetry data for projects. It is designed to be a gimmick for neiche developers.",
+      problem: 
+        "most telemetry is static, I wanted something that could be read aloud as a form of motivation.",
+      features: [
+        "Shows coding stats, commits, build status, and uptime",
+        "Converts each event into a radio-style broadcast",
+        "Optional text-to-speech",
+      ],
+      tech: [],
+      learned: [
+        "This project is still in planning, so i have not *learnt* anything yet"
+      ]
+    },
   },
   {
     name: "This Site",
@@ -56,18 +75,62 @@ const projects = [
     link: "#",
     source: "https://github.com/clarkpy/clarkportfolio",
     meta: "clarkportfolio",
+    status: "Polishing",
+    year: "2026",
+    role: "Developer & Maintainer",
+    details : {
+      intro:
+        "This site is a personal portfolio page for showing off my stuff.",
+      problem: 
+        "I wanted a site that I could actually use for job applications but my old one felt to casual.",
+      features: [
+        "Universal Glassmorphism",
+        "Draggable tech stack marquees",
+        "Tech tooltips",
+        "Hackatime coding stats",
+      ],
+      tech: ["React", "Tailwind", "Framer Motion"],
+      learned: [
+        "How to make animations feel polished without making the site annoying.",
+        "How to make a site feel useful without making it feel like a resume.",
+      ]
+    },
   },
   {
     name: "ClarkLab",
-    description: "A personal deployment platform for hosting apps.",
+    description: "A personal PaaS platform for hosting apps.",
     tags: ["React", "Rust", "Docker"],
     link: "https://app.clarklab.tech",
     source: "https://github.com/clarkpy/clarklab-global",
     fullWidth: true,
     screenshot: "/clarklab.png",
-    meta: "clarklab-global|clarklab-frontend|clarklab-api|clarklab-agent|clarklab"
+    meta: "clarklab-global|clarklab-frontend|clarklab-api|clarklab-agent|clarklab",
+    status: "Live",
+    year: "2026",
+    role: "Full-stack Developer",
+    details: {
+      intro:
+        "ClarkLab is my personal PaaS platform for running and managing apps on my own infrastructure.",
+      problem:
+        "I wanted my own version of Coolify that fits my projects, my infrastructure, and my workflow.",
+      features: [
+        "App deployment dashboard",
+        "Docker-based services",
+        "Easy Self-Hosting",
+        "Project management UI",
+        "Custom styling",
+      ],
+      tech: ["React", "Rust", "Docker", "PostgreSQL", "Debian"],
+      learned: [
+        "How deployment platforms are structured.",
+        "How frontend dashboards connect to infrastructure.",
+        "How to design tools around my own workflow.",
+      ],
+    },
   },
 ] as const;
+
+type Project = (typeof projects)[number];
 
 const projectLinkClass =
   "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-zinc-300 transition hover:scale-105 hover:text-white";
@@ -272,8 +335,10 @@ function SectionTitle({
 
 function ProjectCard({
   project,
+  onOpen,
 }: {
   project: (typeof projects)[number];
+  onOpen: () => void;
 }) {
   const content = (
     <>
@@ -294,6 +359,18 @@ function ProjectCard({
           </span>
         ))}
       </div>
+
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <button
+          type="button"
+          className="btn btn-sm"
+          onClick={onOpen}
+        >
+          View Details
+          <ArrowUpRight size={14} />
+        </button>
+      </div>
+
       {"meta" in project ? (
         <ProjectMeta projectHackatimeHandle={project.meta} />
       ) : null}
@@ -324,10 +401,161 @@ function scrollTo(id: string) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
+function ProjectCaseStudy({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  const hasScreenshot = "screenshot" in project && project.screenshot;
+  
+  return (
+   <motion.div
+     className="project-modal-backdrop"
+     initial={{ opacity: 0 }}
+     animate={{ opacity: 1 }}
+     exit={{ opacity: 0 }}
+     transition={{ duration: 0.25 }}
+     onClick={onClose}
+   >
+    <motion.article
+      className="project-modal"
+      initial={{
+        opacity: 0,
+        y: 48,
+        scale: 0.92,
+        filter: "blur(10px)",
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+      }}
+      exit={{
+        opacity: 0,
+        y: 32,
+        scale: 0.96,
+        filter: "blur(8px)",
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 220,
+        damping: 26,
+        mass:0.9
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="project-modal-glow" />
+      <header className="project-modal-header">
+        <div>
+          <p className="project-modal-eyebrow">
+            {project.status} · {project.year}
+          </p>
+
+          <h2>{project.name}</h2>
+
+          <p className="project-modal-description">
+            {project.details.intro}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          className="project-modal-close"
+          onClick={onClose}
+          aria-label="Close project details"
+        >
+          <X size={18} />
+        </button>
+      </header>
+
+      {hasScreenshot ? (
+        <motion.img
+          src={project.screenshot}
+          alt={project.name}
+          className="project-modal-screenshot"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.12, delay: 0.45 }}
+        />
+      ) : null}
+      
+      <div className="project-modal-grid">
+        <section className="project-modal-section project-modal-section-large">
+            <p className="project-modal-label"> Problem</p>
+            <p>{project.details.problem}</p>
+        </section>
+
+        <section className="project-modal-section">
+            <p className="project-modal-label">Role</p>
+            <p>{project.role}</p>
+          </section>
+
+          <section className="project-modal-section">
+            <p className="project-modal-label">Stack</p>
+            <div className="project-modal-tags">
+              {project.details.tech.map((tech) => (
+                <span key={tech} className="tag">
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section className="project-modal-section project-modal-section-large">
+            <p className="project-modal-label">Main Features</p>
+            <ul className="project-modal-list">
+              {project.details.features.map((feature) => (
+                <li key={feature}>{feature}</li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="project-modal-section project-modal-section-large">
+            <p className="project-modal-label">What I Learned</p>
+            <ul className="project-modal-list">
+              {project.details.learned.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        </div>
+        
+        <footer className="project-modal-actions">
+          <ProjectSourceLink source={project.source} />
+          <ProjectVisitLink link={project.link} name={project.name} />
+        </footer>
+    </motion.article>
+  </motion.div>
+  )  
+}
+
+
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [timeSpent, setTimeSpent] = useState<string | null>(null);
   const [timeSpentToday, setTimeSpentToday] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 120,
@@ -613,7 +841,10 @@ export default function App() {
               delay={index * 0.1}
               className={"fullWidth" in project && project.fullWidth ? "md:col-span-2" : ""}
             >
-              <ProjectCard project={project} />
+              <ProjectCard
+                project={project}
+                onOpen={() => setSelectedProject(project)}
+              />
             </FadeIn>
           ))}
         </div>
@@ -654,6 +885,17 @@ export default function App() {
         </p>
    
       </footer>
+
+      <AnimatePresence mode="wait">
+        {selectedProject ? (
+          <ProjectCaseStudy
+            key={selectedProject.name}
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        ) : null}
+      </AnimatePresence>
+
     </main>
   );
 }
