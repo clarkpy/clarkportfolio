@@ -9,7 +9,7 @@ import { TechChip } from "./TechChip";
 import { getMarqueeDuration } from "./tech-data";
 import type { TechItem } from "./types";
 
-const MAX_CYCLE_REPEATS = 32;
+const MAX_CYCLE_REPEATS = 8;
 
 function wrapOffset(value: number, loopWidth: number) {
   if (loopWidth <= 0) return value;
@@ -45,6 +45,7 @@ export function TechMarquee({
   const lastPointerXRef = useRef(0);
   const lastMoveTimeRef = useRef(0);
   const prefersReducedMotionRef = useRef(false);
+  const isInViewRef = useRef(false);
 
   const [repeatCount, setRepeatCount] = useState(() =>
     getMinCycleRepeats(items.length, columnSpan),
@@ -76,6 +77,25 @@ export function TechMarquee({
     updatePreference();
     media.addEventListener("change", updatePreference);
     return () => media.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      },
+    );
+
+    observer.observe(container);
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -112,6 +132,7 @@ export function TechMarquee({
 
   useAnimationFrame((_, delta) => {
     if (
+      !isInViewRef.current ||
       isDraggingRef.current ||
       isHoveredRef.current ||
       isPausedRef.current ||

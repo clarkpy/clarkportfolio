@@ -65,21 +65,18 @@ function TechTooltip({
           }}
           initial={{
             opacity: 0,
-            y: 12,
-            scale: 0.92,
-            filter: "blur(8px)",
+            y: 10,
+            scale: 0.96,
           }}
           animate={{
             opacity: 1,
             y: 0,
             scale: 1,
-            filter: "blur(0px)",
           }}
           exit={{
             opacity: 0,
-            y: 8,
-            scale: 0.96,
-            filter: "blur(6px)",
+            y: 6,
+            scale: 0.98,
           }}
           transition={{
             type: "spring",
