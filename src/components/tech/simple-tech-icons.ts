@@ -4,6 +4,7 @@ import {
   siCoolify,
   siCursor,
   siExpress,
+  siFramer,
   siGhostty,
   siHetzner,
   siNushell,
@@ -12,6 +13,7 @@ import {
 
 export const simpleTechIcons: Record<string, SimpleIcon> = {
   express: siExpress,
+  framer: siFramer,
   hetzner: siHetzner,
   nushell: siNushell,
   coolify: siCoolify,

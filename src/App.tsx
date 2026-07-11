@@ -1,5 +1,5 @@
-import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
-import { ArrowUpRight, Code2, Mail, X } from "lucide-react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Package, ArrowLeft, ArrowUpRight, Code2, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GitHubIcon } from "./components/GitHubIcon";
 import { GlowCard } from "./components/GlowCard";
@@ -10,6 +10,8 @@ import {
   mcTech,
 } from "./components/tech";
 import { akrylicTech } from "./components/tech/tech-data";
+import type { TechItem } from "./components/tech/types";
+import "./project-page.css";
 
 const navSections = ["hero", "about", "experience", "projects", "contact"] as const;
 
@@ -43,6 +45,7 @@ const experience = [
 const projects = [
   {
     name: "Telemetry",
+    slug: "telemetry",
     description: "A “radio station” for live project telemetry.",
     tags: [],
     link: "#",
@@ -52,24 +55,25 @@ const projects = [
     year: "2026",
     role: "Developer & Maintainer",
     screenshot: "/telemetry.png",
-    details : {
+    details: {
       intro:
-        "Telemetry is a project for providing live telemetry data for projects. It is designed to be a gimmick for neiche developers.",
-      problem: 
-        "most telemetry is static, I wanted something that could be read aloud as a form of motivation.",
+        "Telemetry is a live broadcast layer for project activity — built as a playful radio station for niche developers.",
+      problem:
+        "Most telemetry is static. I wanted something that could be spoken aloud and feel motivating instead of just another dashboard.",
       features: [
         "Shows coding stats, commits, build status, and uptime",
         "Converts each event into a radio-style broadcast",
         "Optional text-to-speech",
       ],
-      tech: [],
+      tech: [] as TechItem[],
       learned: [
-        "This project is still in planning, so i have not *learnt* anything yet"
-      ]
+        "Still in planning — nothing learned in production yet.",
+      ],
     },
   },
   {
     name: "This Site",
+    slug: "this-site",
     description: "A basic site to show off my stuff.",
     tags: ["React", "Tailwind", "Framer Motion"],
     link: "#",
@@ -78,26 +82,31 @@ const projects = [
     status: "Polishing",
     year: "2026",
     role: "Developer & Maintainer",
-    details : {
+    details: {
       intro:
-        "This site is a personal portfolio page for showing off my stuff.",
-      problem: 
-        "I wanted a site that I could actually use for job applications but my old one felt to casual.",
+        "A personal portfolio built to feel intentional — calm enough for job applications, expressive enough to feel like me.",
+      problem:
+        "I needed a site I could actually send to employers, but my old one felt too casual for that.",
       features: [
-        "Universal Glassmorphism",
+        "Universal glassmorphism",
         "Draggable tech stack marquees",
         "Tech tooltips",
         "Hackatime coding stats",
       ],
-      tech: ["React", "Tailwind", "Framer Motion"],
+      tech: [
+        { name: "React", slug: "react" },
+        { name: "Tailwind", slug: "tailwindcss" },
+        { name: "Framer Motion", slug: "framer" },
+      ] as TechItem[],
       learned: [
-        "How to make animations feel polished without making the site annoying.",
-        "How to make a site feel useful without making it feel like a resume.",
-      ]
+        "How to keep motion polished without making the page feel noisy.",
+        "How to make a portfolio useful without turning it into a resume dump.",
+      ],
     },
   },
   {
     name: "ClarkLab",
+    slug: "clarklab",
     description: "A personal PaaS platform for hosting apps.",
     tags: ["React", "Rust", "Docker"],
     link: "https://app.clarklab.tech",
@@ -110,27 +119,43 @@ const projects = [
     role: "Full-stack Developer",
     details: {
       intro:
-        "ClarkLab is my personal PaaS platform for running and managing apps on my own infrastructure.",
+        "ClarkLab is my personal PaaS for deploying and managing apps on infrastructure I control.",
       problem:
-        "I wanted my own version of Coolify that fits my projects, my infrastructure, and my workflow.",
+        "I wanted my own Coolify — shaped around my projects, my servers, and the way I actually ship.",
       features: [
         "App deployment dashboard",
         "Docker-based services",
-        "Easy Self-Hosting",
+        "Easy self-hosting",
         "Project management UI",
         "Custom styling",
       ],
-      tech: ["React", "Rust", "Docker", "PostgreSQL", "Debian"],
+      tech: [
+        { name: "React", slug: "react" },
+        { name: "Rust", slug: "rust" },
+        { name: "Docker", slug: "docker" },
+        { name: "PostgreSQL", slug: "postgresql" },
+        { name: "Debian", slug: "debian" },
+      ] as TechItem[],
       learned: [
-        "How deployment platforms are structured.",
-        "How frontend dashboards connect to infrastructure.",
-        "How to design tools around my own workflow.",
+        "How deployment platforms are structured end to end.",
+        "How frontend dashboards connect cleanly to infrastructure.",
+        "How to design tools around my own workflow instead of forcing someone else's.",
       ],
     },
   },
 ] as const;
 
 type Project = (typeof projects)[number];
+
+function getProjectSlugFromPath(pathname: string) {
+  const match = pathname.match(/^\/projects\/([^/]+)/);
+  return match?.[1] ?? null;
+}
+
+function getProjectBySlug(slug: string | null) {
+  if (!slug) return null;
+  return projects.find((project) => project.slug === slug) ?? null;
+}
 
 const projectLinkClass =
   "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-zinc-300 transition hover:scale-105 hover:text-white";
@@ -345,6 +370,14 @@ function ProjectCard({
       <div className="flex items-start justify-between gap-4">
         <h3 className="text-2xl font-bold text-white">{project.name}</h3>
         <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            className={projectLinkClass}
+            onClick={onOpen}
+            aria-label={`Open ${project.name} details`}
+          >
+            <Package size={16} />
+          </button>
           <ProjectSourceLink source={project.source} />
           <ProjectVisitLink link={project.link} name={project.name} />
         </div>
@@ -360,17 +393,6 @@ function ProjectCard({
         ))}
       </div>
 
-      <div className="mt-6 flex items-center justify-between gap-4">
-        <button
-          type="button"
-          className="btn btn-sm"
-          onClick={onOpen}
-        >
-          View Details
-          <ArrowUpRight size={14} />
-        </button>
-      </div>
-
       {"meta" in project ? (
         <ProjectMeta projectHackatimeHandle={project.meta} />
       ) : null}
@@ -378,7 +400,12 @@ function ProjectCard({
     </>
   );
 
-  if ("screenshot" in project && project.screenshot) {
+  if (
+    "fullWidth" in project &&
+    project.fullWidth &&
+    "screenshot" in project &&
+    project.screenshot
+  ) {
     return (
       <GlowCard className="flex h-full flex-col overflow-hidden p-0">
         <img
@@ -401,167 +428,132 @@ function scrollTo(id: string) {
   window.scrollTo({ top, behavior: "smooth" });
 }
 
-function ProjectCaseStudy({
+function ProjectDetailPage({
   project,
-  onClose,
+  onBack,
 }: {
   project: Project;
-  onClose: () => void;
+  onBack: () => void;
 }) {
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+  const screenshot =
+    "screenshot" in project && project.screenshot ? project.screenshot : null;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
-  const hasScreenshot = "screenshot" in project && project.screenshot;
-  
   return (
-   <motion.div
-     className="project-modal-backdrop"
-     initial={{ opacity: 0 }}
-     animate={{ opacity: 1 }}
-     exit={{ opacity: 0 }}
-     transition={{ duration: 0.25 }}
-     onClick={onClose}
-   >
-    <motion.article
-      className="project-modal"
-      initial={{
-        opacity: 0,
-        y: 48,
-        scale: 0.92,
-        filter: "blur(10px)",
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        filter: "blur(0px)",
-      }}
-      exit={{
-        opacity: 0,
-        y: 32,
-        scale: 0.96,
-        filter: "blur(8px)",
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 220,
-        damping: 26,
-        mass:0.9
-      }}
-      onClick={(e) => e.stopPropagation()}
+    <motion.section
+      className="project-page relative z-10 mx-auto min-h-screen max-w-6xl px-6 pb-24 pt-36"
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.39, 0.21, 0.12, 0.96] }}
     >
-      <div className="project-modal-glow" />
-      <header className="project-modal-header">
+      <button type="button" className="project-page-back" onClick={onBack}>
+        <ArrowLeft size={16} />
+        Back to projects
+      </button>
+
+      <div className="project-page-hero">
         <div>
-          <p className="project-modal-eyebrow">
+          <p className="project-page-eyebrow">
             {project.status} · {project.year}
           </p>
 
-          <h2>{project.name}</h2>
+          <h1>{project.name}</h1>
 
-          <p className="project-modal-description">
+          <p className="project-page-description">
             {project.details.intro}
           </p>
         </div>
 
-        <button
-          type="button"
-          className="project-modal-close"
-          onClick={onClose}
-          aria-label="Close project details"
-        >
-          <X size={18} />
-        </button>
-      </header>
-
-      {hasScreenshot ? (
-        <motion.img
-          src={project.screenshot}
-          alt={project.name}
-          className="project-modal-screenshot"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.12, delay: 0.45 }}
-        />
-      ) : null}
-      
-      <div className="project-modal-grid">
-        <section className="project-modal-section project-modal-section-large">
-            <p className="project-modal-label"> Problem</p>
-            <p>{project.details.problem}</p>
-        </section>
-
-        <section className="project-modal-section">
-            <p className="project-modal-label">Role</p>
-            <p>{project.role}</p>
-          </section>
-
-          <section className="project-modal-section">
-            <p className="project-modal-label">Stack</p>
-            <div className="project-modal-tags">
-              {project.details.tech.map((tech) => (
-                <span key={tech} className="tag">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </section>
-
-          <section className="project-modal-section project-modal-section-large">
-            <p className="project-modal-label">Main Features</p>
-            <ul className="project-modal-list">
-              {project.details.features.map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="project-modal-section project-modal-section-large">
-            <p className="project-modal-label">What I Learned</p>
-            <ul className="project-modal-list">
-              {project.details.learned.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-        </div>
-        
-        <footer className="project-modal-actions">
+        <div className="project-page-links">
           <ProjectSourceLink source={project.source} />
           <ProjectVisitLink link={project.link} name={project.name} />
-        </footer>
-    </motion.article>
-  </motion.div>
-  )  
-}
+        </div>
+      </div>
 
+      {screenshot ? (
+        <motion.div
+          className="project-page-screenshot-shell"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.45 }}
+        >
+          <img
+            src={screenshot}
+            alt={`${project.name} screenshot`}
+            className="project-page-screenshot"
+            loading="lazy"
+            decoding="async"
+          />
+        </motion.div>
+      ) : null}
+
+      <div className="project-page-grid">
+        <GlowCard className="project-page-card">
+          <p className="project-page-label">Problem</p>
+          <p className="project-page-body">{project.details.problem}</p>
+        </GlowCard>
+
+        <GlowCard className="project-page-card project-page-stack">
+          <p className="project-page-label">Role</p>
+          <p className="project-page-role">{project.role}</p>
+          {project.details.tech.length > 0 ? (
+            <div className="project-page-marquee">
+              <TechMarquee
+                key={project.details.tech.map((item) => item.slug).join("-")}
+                items={[...project.details.tech]}
+                columnSpan={1}
+              />
+            </div>
+          ) : (
+            <p className="project-page-empty">Stack not decided yet</p>
+          )}
+        </GlowCard>
+
+        <GlowCard className="project-page-card project-page-card-large">
+          <p className="project-page-label">Main Features</p>
+          <ul className="project-page-list">
+            {project.details.features.map((feature) => (
+              <li key={feature}>{feature}</li>
+            ))}
+          </ul>
+        </GlowCard>
+
+        <GlowCard className="project-page-card project-page-card-large">
+          <p className="project-page-label">What I Learned</p>
+          <ul className="project-page-list">
+            {project.details.learned.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </GlowCard>
+      </div>
+    </motion.section>
+  );
+}
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [timeSpent, setTimeSpent] = useState<string | null>(null);
   const [timeSpentToday, setTimeSpentToday] = useState<string | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+  const projectSlug = getProjectSlugFromPath(pathname);
+  const currentProject = getProjectBySlug(projectSlug);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 120,
     damping: 30,
     restDelta: 0.001,
   });
+
+  useEffect(() => {
+  function handlePopState() {
+    setPathname(window.location.pathname);
+    window.scrollTo({ top: 0 });
+  }
+
+  window.addEventListener("popstate", handlePopState);
+
+  return () => window.removeEventListener("popstate", handlePopState);
+}, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -594,6 +586,27 @@ export default function App() {
       .then(setTimeSpentToday)
       .catch(() => setTimeSpentToday(null));
   }, []);
+
+  function navigateToProject(project: Project) {
+    window.history.pushState(null, "", `/projects/${project.slug}`);
+    setPathname(window.location.pathname);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function goHomeTo(section: "hero" | "about" | "experience" | "projects" | "contact") {
+    if (window.location.pathname !== "/") {
+      window.history.pushState(null, "", "/");
+      setPathname("/");
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => scrollTo(section));
+      });
+
+      return;
+    }
+
+    scrollTo(section);
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[var(--clark-bg)] text-white">
@@ -628,7 +641,7 @@ export default function App() {
           <div className="navbar-inner">
             <button
               type="button"
-              onClick={() => scrollTo("hero")}
+              onClick={() => goHomeTo("hero")}
               className="navbar-brand"
             >
             <div className="navbar-brand-icon backdrop-blur-[12px]">
@@ -646,21 +659,21 @@ export default function App() {
             <button
               type="button"
               className={`nav-link ${activeSection === "about" ? "nav-link-active" : ""}`}
-              onClick={() => scrollTo("about")}
+              onClick={() => goHomeTo("about")}
             >
               About
             </button>
             <button
               type="button"
               className={`nav-link ${activeSection === "experience" ? "nav-link-active" : ""}`}
-              onClick={() => scrollTo("experience")}
+              onClick={() => goHomeTo("experience")}
             >
               Experience
             </button>
             <button
               type="button"
               className={`nav-link ${activeSection === "projects" ? "nav-link-active" : ""}`}
-              onClick={() => scrollTo("projects")}
+              onClick={() => goHomeTo("projects")}
             >
               Projects
             </button>
@@ -668,7 +681,7 @@ export default function App() {
 
           <button
             type="button"
-            onClick={() => scrollTo("contact")}
+            onClick={() => goHomeTo("contact")}
             className="btn btn-primary btn-sm cursor-pointer"
           >
             Contact
@@ -677,6 +690,13 @@ export default function App() {
         </motion.nav>
       </div>
 
+      {currentProject ? (
+        <ProjectDetailPage
+          project={currentProject}
+          onBack={() => goHomeTo("projects")}
+        />
+      ) : (
+        <>
       <section
         id="hero"
         className="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 pt-28 text-center"
@@ -843,7 +863,7 @@ export default function App() {
             >
               <ProjectCard
                 project={project}
-                onOpen={() => setSelectedProject(project)}
+                onOpen={() => navigateToProject(project)}
               />
             </FadeIn>
           ))}
@@ -883,19 +903,9 @@ export default function App() {
             </>
           )}
         </p>
-   
       </footer>
-
-      <AnimatePresence mode="wait">
-        {selectedProject ? (
-          <ProjectCaseStudy
-            key={selectedProject.name}
-            project={selectedProject}
-            onClose={() => setSelectedProject(null)}
-          />
-        ) : null}
-      </AnimatePresence>
-
+        </>
+      )}
     </main>
   );
 }
